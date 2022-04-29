@@ -23,6 +23,11 @@ const server = app.listen(port, () => {
     console.log("Server running on port %PORT%".replace("%PORT%",port))
 });
 
+// test if its working
+app.get("/app/", (req, res, next) => {
+    res.json({"message":"The API is working(200)"});
+	res.status(200);
+});
 
 
 if (args.log == 'false') {
@@ -75,21 +80,15 @@ app.use((req, res, next) => {
 
 // debug
 if (args.debug || args.d) {
-    app.get('/app/log/access/', (req, res, next) => {
+    app.get('/app/log/access/', (req, res) => {
         const stmt = db.prepare("SELECT * FROM accesslog").all();
 	    res.status(200).json(stmt);
     })
 
-    app.get('/app/error/', (req, res, next) => {
-        throw new Error('Error test works.')
+    app.get('/app/error/', (req, res) => {
+        throw new Error('Error, test works.')
     })
 }
-
-// test if its working
-app.get("/app/", (req, res, next) => {
-    res.json({"message":"The API is working(200)"});
-	res.status(200);
-});
 
 //API
 app.get('/app/', (req, res) => {
