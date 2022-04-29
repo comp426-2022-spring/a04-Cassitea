@@ -31,9 +31,9 @@ app.get("/app/", (req, res, next) => {
 
 if (args.log == 'false') {
     console.log("NOTICE: not creating file access.log")
-}else{
-    const accessLog = fs.createWriteStream('access.log', { flags: 'a'})
-    app.use(morgan('combined', {stream: accessLog}))
+} else {
+    const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
+    app.use(morgan('combined', { stream: accessLog }))
 }
 
 // the stored help text
