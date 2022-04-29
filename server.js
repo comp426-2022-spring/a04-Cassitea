@@ -1,8 +1,20 @@
-// Require Express.js
-const express = require('express')
-const app = express()
+// Require Express
+var express = require('express')
+var app = express()
 
+// Require minimist
 const args = require('minimist')(process.argv.slice(2))
+
+// Require fs
+const fs = require('fs')
+
+// Require morgan 
+const morgan = require('morgan')
+
+// Require db script file
+const db = require('./database.js')
+
+
 args['port']
 const HTTP_PORT = args.port || 5000 || process.env.PORT
 
@@ -12,13 +24,11 @@ const server = app.listen(HTTP_PORT, () => {
 });
 
 
-// Simplified of the given one
+//API
 app.get('/app/', (req, res) => {
     res.status(200).end('OK')
     res.type('text/plain')
 });
-
-// TODO: Endpoints
 
 app.get('/app/flip/', (req, res) => {
     const flip = coinFlip();
@@ -45,15 +55,11 @@ app.use(function (req, res) {
 });
 
 
-// Coin functions from a02
-
-// coinFlip()
+//COIN FUNCTIONS
 
 function coinFlip() {
     return Math.random() > 0.5 ? "heads" : "tails"
   }
-  
- // coinFlips(flips)
   
   function coinFlips(flips) {
     const result = [];
@@ -62,8 +68,6 @@ function coinFlip() {
     }
     return result;
   }
-  
-  // countFlips(array)
   
   function countFlips(array) {
     var headCount = 0;
@@ -78,8 +82,6 @@ function coinFlip() {
     }
     return {heads: headCount, tails: tailCount};
   }
-  
-  // flipACoin(call)
   
   function flipACoin(call) {
     var flip = coinFlip();
