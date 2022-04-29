@@ -50,6 +50,44 @@ server.js [options]
 --help, -h	Return this message and exit.
 `)
 
+//echos the text
+if (args.help || args.h) {
+    console.log(help)
+    process.exit(0)
+}
+
+//loging the database
+app.use((req, res, next) => {
+    let logdata = {
+        remoteaddr: req.ip,
+        remoteuser: req.user,
+        time: Date.now(),
+        method: req.method,
+        url: req.url,
+        protocol: req.protocol,
+        httpversion: req.httpVersion,
+        status: res.statusCode,
+        referrer: req.headers['referer'],
+        useragent: req.headers['user-agent']
+    };
+    console.log(logdata)
+    const stmt = db.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referrer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.status, logdata.referrer, logdata.useragent)
+    //console.log(info)
+    next();
+})
+
+// debug
+if (args.debug || args.d) {
+    app.get('/app/log/access/', (req, res, next) => {
+        const stmt = db.prepare("SELECT * FROM accesslog").all();
+	    res.status(200).json(stmt);
+    })
+
+    app.get('/app/error/', (req, res, next) => {
+        throw new Error('Error test works.')
+    })
+}
 
 //API
 app.get('/app/', (req, res) => {
