@@ -1,5 +1,5 @@
 // Require Express
-var express = require('express')
+var express = require("express")
 var app = express()
 
 // Require minimist
@@ -23,11 +23,7 @@ const server = app.listen(port, () => {
     console.log("Server running on port %PORT%".replace("%PORT%",port))
 });
 
-// test if its working
-app.get("/app/", (req, res, next) => {
-    res.json({"message":"The API is working(200)"});
-	res.status(200);
-});
+
 
 if (args.log == 'false') {
     console.log("NOTICE: not creating file access.log")
@@ -88,6 +84,12 @@ if (args.debug || args.d) {
         throw new Error('Error test works.')
     })
 }
+
+// test if its working
+app.get("/app/", (req, res, next) => {
+    res.json({"message":"The API is working(200)"});
+	res.status(200);
+});
 
 //API
 app.get('/app/', (req, res) => {
