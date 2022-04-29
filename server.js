@@ -14,14 +14,41 @@ const morgan = require('morgan')
 // Require db script file
 const db = require('./database.js')
 
+app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 
-args['port']
-const HTTP_PORT = args.port || 5000 || process.env.PORT
-
-// Start an app server
-const server = app.listen(HTTP_PORT, () => {
-    console.log('App listening on port %PORT%'.replace('%PORT%',HTTP_PORT))
+//creating and starting port
+const port = args.port || args.p || 5000
+const server = app.listen(port, () => {
+    console.log("Server running on port %PORT%".replace("%PORT%",port))
 });
+
+// test if its working
+app.get("/app/", (req, res, next) => {
+    res.json({"message":"The API is working(200)"});
+	res.status(200);
+});
+
+if (args.log == 'false') {
+    console.log("NOTICE: not creating file access.log")
+}else{
+    const accessLog = fs.createWriteStream('access.log', { flags: 'a'})
+    app.use(morgan('combined', {stream: accessLog}))
+}
+
+// the stored help text
+const help = (`
+server.js [options]
+--port, -p	Set the port number for the server to listen on. Must be an integer
+            between 1 and 65535.
+--debug, -d If set to true, creates endlpoints /app/log/access/ which returns
+            a JSON access log from the database and /app/error which throws 
+            an error with the message "Error test successful." Defaults to 
+            false.
+--log		If set to false, no log files are written. Defaults to true.
+            Logs are always written to database.
+--help, -h	Return this message and exit.
+`)
 
 
 //API
